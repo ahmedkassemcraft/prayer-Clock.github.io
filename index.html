@@ -90,6 +90,8 @@
       var currentHour = currentTime.getHours();
       var currentMinute = currentTime.getMinutes();
 
+      resetPrayerColors();
+
       for (var prayer in prayerTimes) {
         var prayerTime = prayerTimes[prayer];
         var prayerElement = document.getElementById(prayer);
@@ -105,16 +107,17 @@
         if (currentHour === hour && currentMinute === minute) {
           prayerElement.style.color = 'green';
           currentPrayer = prayerElement.textContent.split(':')[0];
+          playAlarm();
         } else if (currentHour > hour || (currentHour === hour && currentMinute > minute)) {
           prayerElement.style.color = 'red';
         } else {
           prayerElement.style.color = 'white';
+          setAlarm(hour, minute);
         }
       }
 
       if (currentPrayer) {
         showNotification('Es hora de ' + currentPrayer + '!');
-        playAlarm();
       }
     }
 
@@ -134,8 +137,25 @@
     }
 
     function playAlarm() {
-      var audio = new Audio('alarmsound.mp3');
+      var audio = new Audio('alarm.mp3');
       audio.play();
+    }
+
+    function setAlarm(hour, minute) {
+      var now = new Date();
+      var alarmTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0);
+
+      var timeUntilAlarm = alarmTime - now;
+      if (timeUntilAlarm > 0) {
+        setTimeout(playAlarm, timeUntilAlarm);
+      }
+    }
+
+    function resetPrayerColors() {
+      var prayerElements = document.getElementsByClassName('prayer-time');
+      for (var i = 0; i < prayerElements.length; i++) {
+        prayerElements[i].style.color = 'white';
+      }
     }
 
     setInterval(updateClock, 1000);
