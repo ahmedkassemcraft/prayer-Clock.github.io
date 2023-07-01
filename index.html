@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prayer Clock</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('fondo.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #clock {
+      font-size: 48px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #prayer-times {
+      text-align: center;
+    }
+
+    .prayer-time {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    #livestream {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Prayer Clock</h1>
+
+  <div id="clock"></div>
+
+  <div id="prayer-times">
+    <h2>Horarios de los rezos</h2>
+    <div class="prayer-time" id="fajr">Fajr: </div>
+    <div class="prayer-time" id="dhuhr">Dhuhr: </div>
+    <div class="prayer-time" id="asr">Asr: </div>
+    <div class="prayer-time" id="maghrib">Maghrib: </div>
+    <div class="prayer-time" id="isha">Isha: </div>
+  </div>
+
+  <div id="livestream">
+    <h2>Transmisión en vivo desde La Meca</h2>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/hrnT2IFqyro" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    function updateClock() {
+      var clockElement = document.getElementById('clock');
+      var currentTime = new Date();
+      var hours = currentTime.getHours();
+      var minutes = currentTime.getMinutes();
+      var seconds = currentTime.getSeconds();
+
+      var timeString = formatTime(hours) + ':' + formatTime(minutes) + ':' + formatTime(seconds);
+      clockElement.textContent = timeString;
+    }
+
+    function formatTime(time) {
+      return time < 10 ? '0' + time : time;
+    }
+
+    function updatePrayerTimes() {
+      var prayerTimes = {
+        fajr: { hour: 4, minute: 11 },
+        dhuhr: { hour: 11, minute: 52 },
+        asr: { hour: 15, minute: 19 },
+        maghrib: { hour: 18, minute: 16 },
+        isha: { hour: 19, minute: 29 }
+      };
+
+      var currentPrayer = null;
+      var currentTime = new Date();
+      var currentHour = currentTime.getHours();
+      var currentMinute = currentTime.getMinutes();
+
+      for (var prayer in prayerTimes) {
+        var prayerTime = prayerTimes[prayer];
+        var prayerElement = document.getElementById(prayer);
+
+        var hour = prayerTime.hour;
+        var minute = prayerTime.minute;
+
+        var formattedHour = formatTime(hour);
+        var formattedMinute = formatTime(minute);
+
+        prayerElement.textContent = prayerElement.textContent.split(':')[0] + ': ' + formattedHour + ':' + formattedMinute;
+
+        if (currentHour === hour && currentMinute === minute) {
+          prayerElement.style.color = 'green';
+          currentPrayer = prayerElement.textContent.split(':')[0];
+        } else if (currentHour > hour || (currentHour === hour && currentMinute > minute)) {
+          prayerElement.style.color = 'red';
+        } else {
+          prayerElement.style.color = 'white';
+        }
+      }
+
+      if (currentPrayer) {
+        showNotification('Es hora de ' + currentPrayer + '!');
+        playAlarm();
+      }
+    }
+
+    function showNotification(message) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        var notification = new Notification('Prayer Clock', {
+          body: message,
+          icon: 'notification.png'
+        });
+      }
+    }
+
+    function requestNotificationPermission() {
+      if ('Notification' in window && Notification.permission !== 'granted') {
+        Notification.requestPermission();
+      }
+    }
+
+    function playAlarm() {
+      var audio = new Audio('alarmsound.mp3');
+      audio.play();
+    }
+
+    setInterval(updateClock, 1000);
+    setInterval(updatePrayerTimes, 1000);
+    requestNotificationPermission();
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(function(registration) {
+            console.log('Service Worker registrado con éxito:', registration);
+          })
+          .catch(function(error) {
+            console.log('Error al registrar el Service Worker:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
