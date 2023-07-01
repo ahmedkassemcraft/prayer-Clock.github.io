@@ -59,6 +59,11 @@
         font-size: 18px;
         margin-bottom: 5px;
       }
+
+      #livestream iframe {
+        width: 100%;
+        height: auto;
+      }
     }
   </style>
 </head>
@@ -135,6 +140,7 @@
 
       if (currentPrayer) {
         showNotification('Es hora de ' + currentPrayer + '!');
+        playAlarmSound();
       }
     }
 
@@ -151,6 +157,11 @@
       if ('Notification' in window && Notification.permission !== 'granted') {
         Notification.requestPermission();
       }
+    }
+
+    function playAlarmSound() {
+      var audio = new Audio('alarm.mp3');
+      audio.play();
     }
 
     setInterval(updateClock, 1000);
