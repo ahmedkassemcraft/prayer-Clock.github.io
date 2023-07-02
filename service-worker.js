@@ -15,9 +15,26 @@ self.addEventListener('install', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request).then(function(response) {
-      return response || fetch(event.request);
-    })
-  );
+  // Intercepta las solicitudes de descarga de la PWA
+  if (event.request.url.endsWith('/download')) {
+    event.respondWith(handleDownloadRequest(event.request));
+  } else {
+    event.respondWith(
+      caches.match(event.request).then(function(response) {
+        return response || fetch(event.request);
+      })
+    );
+  }
 });
+
+async function handleDownloadRequest(request) {
+  // Obtiene el archivo de la PWA para descargar
+  const response = await fetch('/path-to-your-pwa-file');
+  const fileBlob = await response.blob();
+
+  // Crea una respuesta personalizada con el archivo para descargar
+  const headers = { 'Content-Disposition': 'attachment; filename="pwa-file.extension"' };
+  const customizedResponse = new Response(fileBlob, { headers });
+
+  return customizedResponse;
+}
