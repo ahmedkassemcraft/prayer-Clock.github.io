@@ -1,10 +1,11 @@
 {
   "name": "Prayer Clock",
   "short_name": "Prayer Clock",
+  "description": "A Prayer Clock web app",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#333333",
   "icons": [
     {
       "src": "icon.png",
