@@ -1,23 +1,23 @@
-self.addEventListener('install', function(event) {
-  event.waitUntil(
-    caches.open('prayer-clock-v1').then(function(cache) {
-      return cache.addAll([
-        '/',
-        'index.html',
-        'icon.png',
-        'icon-512x512.png',
-        'notification.png',
-        'fondo.jpg',
-        'https://www.youtube.com/embed/hrnT2IFqyro'
-      ]);
-    })
-  );
-});
+function downloadPWA() {
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(function(registration) {
+        console.log('Service Worker registrado con éxito:', registration);
 
-self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request).then(function(response) {
-      return response || fetch(event.request);
-    })
-  );
-});
+        registration.pushManager.subscribe({ userVisibleOnly: true })
+          .then(function(subscription) {
+            var endpoint = subscription.endpoint;
+            console.log('Suscripción a notificaciones:', endpoint);
+
+            // Aquí puedes realizar la lógica para descargar la PWA
+            // Puedes redirigir al usuario a un enlace de descarga o mostrar una notificación de descarga
+          })
+          .catch(function(error) {
+            console.log('Error al suscribirse a notificaciones:', error);
+          });
+      })
+      .catch(function(error) {
+        console.log('Error al registrar el Service Worker:', error);
+      });
+  }
+}
