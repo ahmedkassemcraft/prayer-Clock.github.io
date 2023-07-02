@@ -6,7 +6,7 @@
   <link rel="manifest" href="manifest.json">
   <style>
     body {
-      font-family:helvética;
+      font-family: helvetica;
       background-image: url('fondo.jpg');
       background-size: cover;
       background-position: center;
@@ -36,11 +36,6 @@
     }
 
     #livestream {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    #download-button {
       text-align: center;
       margin-top: 20px;
     }
@@ -89,10 +84,6 @@
   <div id="livestream">
     <h2>Transmisión en vivo desde La Meca</h2>
     <iframe width="560" height="315" src="https://www.youtube.com/embed/hrnT2IFqyro" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-  </div>
-
-  <div id="download-button">
-    <button onclick="downloadPWA()">Descargar versión PWA</button>
   </div>
 
   <script>
@@ -148,7 +139,7 @@
       }
 
       if (currentPrayer) {
-        showNotification('¡Es hora de ' + currentPrayer + '!');
+        showNotification('Es hora de ' + currentPrayer + '!');
         playAlarmSound();
       }
     }
@@ -171,10 +162,6 @@
     function playAlarmSound() {
       var audio = new Audio('alarmsound.mp3');
       audio.play();
-    }
-
-    function downloadPWA() {
-      window.location.href = 'https://ahmedkassemcraft.github.io/prayer-Clock.github.io/';
     }
 
     setInterval(updateClock, 1000);
