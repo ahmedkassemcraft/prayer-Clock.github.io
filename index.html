@@ -6,7 +6,7 @@
   <link rel="manifest" href="manifest.json">
   <style>
     body {
-      font-family:helvética;
+      font-family: helvetica;
       background-image: url('fondo.jpg');
       background-size: cover;
       background-position: center;
@@ -92,7 +92,7 @@
   </div>
 
   <div id="download-button">
-    <button onclick="downloadPWA()">Descargar version PWA</button>
+    <button onclick="downloadPWA()">Descargar versión PWA</button>
   </div>
 
   <script>
@@ -148,7 +148,7 @@
       }
 
       if (currentPrayer) {
-        showNotification('Es hora de ' + currentPrayer + '!');
+        showNotification('¡Es hora de ' + currentPrayer + '!');
         playAlarmSound();
       }
     }
@@ -186,6 +186,8 @@
 
                 // Aquí puedes realizar la lógica para descargar la PWA
                 // Puedes redirigir al usuario a un enlace de descarga o mostrar una notificación de descarga
+                // Por ejemplo, redirigir al usuario a la URL de descarga de la PWA:
+                window.location.href = '/path-to-your-pwa-file';
               })
               .catch(function(error) {
                 console.log('Error al suscribirse a notificaciones:', error);
