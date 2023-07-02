@@ -41,8 +41,11 @@
     }
 
     video {
-      max-width: 80%;
+      width: 80%;
+      max-width: 800px;
       height: auto;
+      display: block;
+      margin: 0 auto;
     }
 
     /* Media queries for responsive design */
@@ -83,7 +86,7 @@
 
   <div id="livestream">
     <h2>Transmisión en vivo desde La Meca</h2>
-    <video src="https://www.youtube.com/watch?v=hrnT2IFqyro&pp=ygUPbGEgbWVjYSBlbiB2aXZv"></video>
+    <video id="livestream-video" src="https://www.youtube.com/watch?v=hrnT2IFqyro&pp=ygUPbGEgbWVjYSBlbiB2aXZv" frameborder="0" allowfullscreen></video>
   </div>
 
   <script>
