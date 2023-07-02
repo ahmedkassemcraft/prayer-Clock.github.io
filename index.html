@@ -40,6 +40,11 @@
       margin-top: 20px;
     }
 
+    #download-button {
+      text-align: center;
+      margin-top: 20px;
+    }
+
     /* Media queries for responsive design */
     @media (max-width: 768px) {
       body {
@@ -84,6 +89,10 @@
   <div id="livestream">
     <h2>Transmisión en vivo desde La Meca</h2>
     <iframe width="560" height="315" src="https://www.youtube.com/embed/hrnT2IFqyro" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+
+  <div id="download-button">
+    <button onclick="downloadPWA()">Descargar version PWA</button>
   </div>
 
   <script>
@@ -162,6 +171,30 @@
     function playAlarmSound() {
       var audio = new Audio('alarmsound.mp3');
       audio.play();
+    }
+
+    function downloadPWA() {
+      if ('serviceWorker' in navigator && 'PushManager' in window) {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(function(registration) {
+            console.log('Service Worker registrado con éxito:', registration);
+
+            registration.pushManager.subscribe({ userVisibleOnly: true })
+              .then(function(subscription) {
+                var endpoint = subscription.endpoint;
+                console.log('Suscripción a notificaciones:', endpoint);
+
+                // Aquí puedes realizar la lógica para descargar la PWA
+                // Puedes redirigir al usuario a un enlace de descarga o mostrar una notificación de descarga
+              })
+              .catch(function(error) {
+                console.log('Error al suscribirse a notificaciones:', error);
+              });
+          })
+          .catch(function(error) {
+            console.log('Error al registrar el Service Worker:', error);
+          });
+      }
     }
 
     setInterval(updateClock, 1000);
