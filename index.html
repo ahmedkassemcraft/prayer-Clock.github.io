@@ -38,32 +38,12 @@
     #livestream {
       text-align: center;
       margin-top: 20px;
-      position: relative;
     }
 
-    .tv-frame {
-      position: relative;
+    .livestream-video {
       width: 100%;
-      padding-top: 56.25%; /* Proporción 16:9 (56.25% = 9 / 16 * 100%) */
-      overflow: hidden;
-    }
-
-    .tv-frame img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .tv-frame video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: 640px;
+      height: auto;
     }
 
     /* Media queries for responsive design */
@@ -85,10 +65,6 @@
         font-size: 18px;
         margin-bottom: 5px;
       }
-
-      .tv-frame {
-        padding-top: 75%; /* Proporción 4:3 (75% = 3 / 4 * 100%) */
-      }
     }
   </style>
 </head>
@@ -108,10 +84,7 @@
 
   <div id="livestream">
     <h2>Transmisión en vivo desde La Meca</h2>
-    <div class="tv-frame">
-      <img src="tv-frame.png" alt="TV Frame">
-      <video src="https://www.youtube.com/watch?v=hrnT2IFqyro&pp=ygUPbGEgbWVjYSBlbiB2aXZv></video>
-    </div>
+    <video class="livestream-video" src="https://www.youtube.com/watch?v=hrnT2IFqyro&pp=ygUPbGEgbWVjYSBlbiB2aXZv" controls autoplay></video>
   </div>
 
   <script>
