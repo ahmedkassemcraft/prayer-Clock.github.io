@@ -57,6 +57,15 @@
       object-fit: cover;
     }
 
+    .tv-frame video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     /* Media queries for responsive design */
     @media (max-width: 768px) {
       body {
@@ -100,8 +109,8 @@
   <div id="livestream">
     <h2>Transmisión en vivo desde La Meca</h2>
     <div class="tv-frame">
-      <img src="tv-frame.png" alt="Cuadro de TV">
-      <iframe width="100%" height="100%" src="https://www.youtube.com/embed/hrnT2IFqyro" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <img src="tv-frame.png" alt="TV Frame">
+      <video src="https://example.com/live-stream" autoplay controls></video>
     </div>
   </div>
 
