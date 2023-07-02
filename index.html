@@ -87,6 +87,9 @@
   </div>
 
   <script>
+    var notificationScheduled = false;
+    var alarmScheduled = false;
+
     function updateClock() {
       var clockElement = document.getElementById('clock');
       var currentTime = new Date();
@@ -104,9 +107,9 @@
 
     function updatePrayerTimes() {
       var prayerTimes = {
-        fajr: { hour: 4, minute: 11 },
-        dhuhr: { hour: 11, minute: 52 },
-        asr: { hour: 15, minute: 19 },
+        fajr: { hour: 4, minute: 30 },
+        dhuhr: { hour: 12, minute: 0 },
+        asr: { hour: 15, minute: 45 },
         maghrib: { hour: 18, minute: 16 },
         isha: { hour: 19, minute: 29 }
       };
@@ -139,8 +142,18 @@
       }
 
       if (currentPrayer) {
-        showNotification('Es hora de ' + currentPrayer + '!');
-        playAlarmSound();
+        if (!notificationScheduled) {
+          showNotification('Es hora de ' + currentPrayer + '!');
+          notificationScheduled = true;
+        }
+
+        if (!alarmScheduled) {
+          playAlarmSound();
+          alarmScheduled = true;
+        }
+      } else {
+        notificationScheduled = false;
+        alarmScheduled = false;
       }
     }
 
