@@ -27,21 +27,30 @@
     }
 
     #prayer-times {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      text-align: left;
-      color: white;
-      font-size: 24px;
+      text-align: center;
     }
 
-    #prayer-times h2 {
+    .prayer-time {
       font-size: 24px;
       margin-bottom: 10px;
     }
 
-    .prayer-time {
-      margin-bottom: 5px;
+    #prayer-change {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      text-align: right;
+      color: white;
+      font-size: 24px;
+    }
+
+    #prayer-change h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    #prayer-change label {
+      display: block;
     }
 
     #livestream {
@@ -49,11 +58,9 @@
       margin-top: 20px;
     }
 
-    iframe {
-      width: 80%;
+    .livestream-video {
+      width: 100%;
       max-width: 800px;
-      height: auto;
-      display: block;
       margin: 0 auto;
     }
 
@@ -93,12 +100,42 @@
     <div class="prayer-time" id="isha">Isha: </div>
   </div>
 
+  <div id="prayer-change">
+    <h2>Cambiar horarios de rezos</h2>
+    <label for="fajr-time">Fajr: </label>
+    <input type="time" id="fajr-time">
+    <br>
+    <label for="dhuhr-time">Dhuhr: </label>
+    <input type="time" id="dhuhr-time">
+    <br>
+    <label for="asr-time">Asr: </label>
+    <input type="time" id="asr-time">
+    <br>
+    <label for="maghrib-time">Maghrib: </label>
+    <input type="time" id="maghrib-time">
+    <br>
+    <label for="isha-time">Isha: </label>
+    <input type="time" id="isha-time">
+    <br>
+    <button id="save-prayer-times">Guardar cambios</button>
+  </div>
+
   <div id="livestream">
     <h2>Transmisión en vivo desde La Meca</h2>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/hrnT2IFqyro" frameborder="0" allowfullscreen></iframe>
+    <div class="livestream-video">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/hrnT2IFqyro" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
   </div>
 
   <script>
+    var prayerTimes = {
+      fajr: { hour: 4, minute: 11 },
+      dhuhr: { hour: 11, minute: 52 },
+      asr: { hour: 15, minute: 19 },
+      maghrib: { hour: 18, minute: 16 },
+      isha: { hour: 19, minute: 29 }
+    };
+
     function updateClock() {
       var clockElement = document.getElementById('clock');
       var currentTime = new Date();
@@ -115,14 +152,6 @@
     }
 
     function updatePrayerTimes() {
-      var prayerTimes = {
-        fajr: { hour: 4, minute: 11 },
-        dhuhr: { hour: 11, minute: 52 },
-        asr: { hour: 15, minute: 19 },
-        maghrib: { hour: 18, minute: 16 },
-        isha: { hour: 19, minute: 29 }
-      };
-
       var currentPrayer = null;
       var currentTime = new Date();
       var currentHour = currentTime.getHours();
@@ -185,22 +214,54 @@
       localStorage.setItem('notificationShown', 'true');
     }
 
-    setInterval(updateClock, 1000);
-    setInterval(updatePrayerTimes, 1000);
-    requestNotificationPermission();
-  </script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('service-worker.js')
-          .then(function(registration) {
-            console.log('Service Worker registrado con éxito:', registration);
-          })
-          .catch(function(error) {
-            console.log('Error al registrar el Service Worker:', error);
-          });
-      });
+    function savePrayerTimes() {
+      var fajrTimeInput = document.getElementById('fajr-time');
+      var dhuhrTimeInput = document.getElementById('dhuhr-time');
+      var asrTimeInput = document.getElementById('asr-time');
+      var maghribTimeInput = document.getElementById('maghrib-time');
+      var ishaTimeInput = document.getElementById('isha-time');
+
+      var fajrTime = fajrTimeInput.value;
+      var dhuhrTime = dhuhrTimeInput.value;
+      var asrTime = asrTimeInput.value;
+      var maghribTime = maghribTimeInput.value;
+      var ishaTime = ishaTimeInput.value;
+
+      var fajrHour = parseInt(fajrTime.split(':')[0]);
+      var fajrMinute = parseInt(fajrTime.split(':')[1]);
+      var dhuhrHour = parseInt(dhuhrTime.split(':')[0]);
+      var dhuhrMinute = parseInt(dhuhrTime.split(':')[1]);
+      var asrHour = parseInt(asrTime.split(':')[0]);
+      var asrMinute = parseInt(asrTime.split(':')[1]);
+      var maghribHour = parseInt(maghribTime.split(':')[0]);
+      var maghribMinute = parseInt(maghribTime.split(':')[1]);
+      var ishaHour = parseInt(ishaTime.split(':')[0]);
+      var ishaMinute = parseInt(ishaTime.split(':')[1]);
+
+      prayerTimes.fajr = { hour: fajrHour, minute: fajrMinute };
+      prayerTimes.dhuhr = { hour: dhuhrHour, minute: dhuhrMinute };
+      prayerTimes.asr = { hour: asrHour, minute: asrMinute };
+      prayerTimes.maghrib = { hour: maghribHour, minute: maghribMinute };
+      prayerTimes.isha = { hour: ishaHour, minute: ishaMinute };
+
+      updatePrayerTimes();
     }
+
+    function init() {
+      updateClock();
+      updatePrayerTimes();
+      requestNotificationPermission();
+
+      var savePrayerTimesButton = document.getElementById('save-prayer-times');
+      savePrayerTimesButton.addEventListener('click', savePrayerTimes);
+
+      setInterval(function() {
+        updateClock();
+        updatePrayerTimes();
+      }, 1000);
+    }
+
+    init();
   </script>
 </body>
 </html>
