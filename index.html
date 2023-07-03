@@ -2,20 +2,87 @@
 <html>
 <head>
   <title>Prayer Clock</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
   <style>
-    #notification-panel {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-top: 20px;
+    body {
+      font-family: helvetica;
+      background-image: url('fondo.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
     }
 
-    .notification {
+    h1 {
+      text-align: center;
+    }
+
+    #clock {
+      font-size: 48px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #prayer-times {
+      text-align: center;
+    }
+
+    .prayer-time {
+      font-size: 24px;
       margin-bottom: 10px;
     }
 
-    .current-prayer {
-      font-weight: bold;
-      color: blue;
+    #prayer-change {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      text-align: right;
+      color: white;
+      font-size: 24px;
+    }
+
+    #prayer-change h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    #prayer-change label {
+      display: block;
+    }
+
+    #livestream {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .livestream-video {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Media queries for responsive design */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      #clock {
+        font-size: 32px;
+        margin-bottom: 10px;
+      }
+
+      .prayer-time {
+        font-size: 18px;
+        margin-bottom: 5px;
+      }
     }
   </style>
 </head>
@@ -25,21 +92,30 @@
   <div id="clock"></div>
 
   <div id="prayer-times">
-    <h2>Tiempos de oración</h2>
+    <h2>Horarios de los rezos</h2>
+    <div class="prayer-time" id="fajr">Fajr: </div>
+    <div class="prayer-time" id="dhuhr">Dhuhr: </div>
+    <div class="prayer-time" id="asr">Asr: </div>
+    <div class="prayer-time" id="maghrib">Maghrib: </div>
+    <div class="prayer-time" id="isha">Isha: </div>
+  </div>
+
+  <div id="prayer-change">
+    <h2>Cambiar horarios de rezos</h2>
     <label for="fajr-time">Fajr: </label>
-    <input type="time" id="fajr-time" value="04:11">
+    <input type="time" id="fajr-time">
     <br>
     <label for="dhuhr-time">Dhuhr: </label>
-    <input type="time" id="dhuhr-time" value="11:52">
+    <input type="time" id="dhuhr-time">
     <br>
     <label for="asr-time">Asr: </label>
-    <input type="time" id="asr-time" value="15:19">
+    <input type="time" id="asr-time">
     <br>
     <label for="maghrib-time">Maghrib: </label>
-    <input type="time" id="maghrib-time" value="18:16">
+    <input type="time" id="maghrib-time">
     <br>
     <label for="isha-time">Isha: </label>
-    <input type="time" id="isha-time" value="19:29">
+    <input type="time" id="isha-time">
     <br>
     <button id="save-prayer-times">Guardar cambios</button>
   </div>
@@ -49,11 +125,6 @@
     <div class="livestream-video">
       <iframe width="560" height="315" src="https://www.youtube.com/embed/hrnT2IFqyro" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
-  </div>
-
-  <div id="notification-panel">
-    <h2>Notificaciones</h2>
-    <div class="notification-list" id="notification-list"></div>
   </div>
 
   <script>
@@ -87,42 +158,52 @@
       var currentMinute = currentTime.getMinutes();
 
       for (var prayer in prayerTimes) {
-        var prayerElement = document.getElementById(prayer + '-time');
-        var hour = prayerTimes[prayer].hour;
-        var minute = prayerTimes[prayer].minute;
+        var prayerTime = prayerTimes[prayer];
+        var prayerElement = document.getElementById(prayer);
+
+        var hour = prayerTime.hour;
+        var minute = prayerTime.minute;
 
         var formattedHour = formatTime(hour);
         var formattedMinute = formatTime(minute);
 
-        prayerElement.textContent = formattedHour + ':' + formattedMinute;
+        prayerElement.textContent = prayerElement.textContent.split(':')[0] + ': ' + formattedHour + ':' + formattedMinute;
 
         if (currentHour === hour && currentMinute === minute) {
-          currentPrayer = prayer;
-          prayerElement.classList.add('current-prayer');
+          prayerElement.style.color = 'green';
+          currentPrayer = prayerElement.textContent.split(':')[0];
+        } else if (currentHour > hour || (currentHour === hour && currentMinute > minute)) {
+          prayerElement.style.color = 'red';
         } else {
-          prayerElement.classList.remove('current-prayer');
+          prayerElement.style.color = 'white';
         }
       }
 
       if (currentPrayer && !isNotificationShown()) {
-        showNotification('Es hora de rezar ' + currentPrayer);
-        markNotificationShown();
+        showNotification('Es hora de ' + currentPrayer + '!');
         playAlarmSound();
+        markNotificationShown();
       }
     }
 
     function showNotification(message) {
-      var notificationList = document.getElementById('notification-list');
-      var notificationItem = document.createElement('div');
-      notificationItem.classList.add('notification');
-      notificationItem.textContent = message;
-      notificationList.appendChild(notificationItem);
+      if ('Notification' in window && Notification.permission === 'granted') {
+        var notification = new Notification('Prayer Clock', {
+          body: message,
+          icon: 'notification.png'
+        });
+      }
     }
 
     function requestNotificationPermission() {
-      if ('Notification' in window) {
+      if ('Notification' in window && Notification.permission !== 'granted') {
         Notification.requestPermission();
       }
+    }
+
+    function playAlarmSound() {
+      var audio = new Audio('alarmsound.mp3');
+      audio.play();
     }
 
     function isNotificationShown() {
@@ -133,34 +214,54 @@
       localStorage.setItem('notificationShown', 'true');
     }
 
-    function playAlarmSound() {
-      var audio = new Audio('alarm.mp3');
-      audio.play();
-    }
-
     function savePrayerTimes() {
-      var fajrTime = document.getElementById('fajr-time').value;
-      var dhuhrTime = document.getElementById('dhuhr-time').value;
-      var asrTime = document.getElementById('asr-time').value;
-      var maghribTime = document.getElementById('maghrib-time').value;
-      var ishaTime = document.getElementById('isha-time').value;
+      var fajrTimeInput = document.getElementById('fajr-time');
+      var dhuhrTimeInput = document.getElementById('dhuhr-time');
+      var asrTimeInput = document.getElementById('asr-time');
+      var maghribTimeInput = document.getElementById('maghrib-time');
+      var ishaTimeInput = document.getElementById('isha-time');
 
-      prayerTimes.fajr = { hour: parseInt(fajrTime.split(':')[0]), minute: parseInt(fajrTime.split(':')[1]) };
-      prayerTimes.dhuhr = { hour: parseInt(dhuhrTime.split(':')[0]), minute: parseInt(dhuhrTime.split(':')[1]) };
-      prayerTimes.asr = { hour: parseInt(asrTime.split(':')[0]), minute: parseInt(asrTime.split(':')[1]) };
-      prayerTimes.maghrib = { hour: parseInt(maghribTime.split(':')[0]), minute: parseInt(maghribTime.split(':')[1]) };
-      prayerTimes.isha = { hour: parseInt(ishaTime.split(':')[0]), minute: parseInt(ishaTime.split(':')[1]) };
+      var fajrTime = fajrTimeInput.value;
+      var dhuhrTime = dhuhrTimeInput.value;
+      var asrTime = asrTimeInput.value;
+      var maghribTime = maghribTimeInput.value;
+      var ishaTime = ishaTimeInput.value;
+
+      var fajrHour = parseInt(fajrTime.split(':')[0]);
+      var fajrMinute = parseInt(fajrTime.split(':')[1]);
+      var dhuhrHour = parseInt(dhuhrTime.split(':')[0]);
+      var dhuhrMinute = parseInt(dhuhrTime.split(':')[1]);
+      var asrHour = parseInt(asrTime.split(':')[0]);
+      var asrMinute = parseInt(asrTime.split(':')[1]);
+      var maghribHour = parseInt(maghribTime.split(':')[0]);
+      var maghribMinute = parseInt(maghribTime.split(':')[1]);
+      var ishaHour = parseInt(ishaTime.split(':')[0]);
+      var ishaMinute = parseInt(ishaTime.split(':')[1]);
+
+      prayerTimes.fajr = { hour: fajrHour, minute: fajrMinute };
+      prayerTimes.dhuhr = { hour: dhuhrHour, minute: dhuhrMinute };
+      prayerTimes.asr = { hour: asrHour, minute: asrMinute };
+      prayerTimes.maghrib = { hour: maghribHour, minute: maghribMinute };
+      prayerTimes.isha = { hour: ishaHour, minute: ishaMinute };
 
       updatePrayerTimes();
     }
 
-    setInterval(updateClock, 1000);
-    setInterval(updatePrayerTimes, 1000);
+    function init() {
+      updateClock();
+      updatePrayerTimes();
+      requestNotificationPermission();
 
-    document.getElementById('save-prayer-times').addEventListener('click', savePrayerTimes);
+      var savePrayerTimesButton = document.getElementById('save-prayer-times');
+      savePrayerTimesButton.addEventListener('click', savePrayerTimes);
 
-    // Request notification permission
-    requestNotificationPermission();
+      setInterval(function() {
+        updateClock();
+        updatePrayerTimes();
+      }, 1000);
+    }
+
+    init();
   </script>
 </body>
 </html>
