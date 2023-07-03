@@ -6,7 +6,7 @@
   <style>
     /* Estilos CSS para el panel de cambio de horas de rezo y las notificaciones */
     body {
-      font-family: Consolas, monospace;
+      font-family: Arial, sans-serif;
       background-color: #000;
       color: #fff;
       margin: 0;
@@ -15,47 +15,27 @@
 
     .container {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
     }
 
-    .terminal {
-      width: 300px;
+    .notifications {
+      width: 200px;
       background-color: #000;
       border: 1px solid #fff;
       padding: 10px;
       margin-right: 20px;
     }
 
-    .terminal-title {
-      color: #0f0;
-      margin-bottom: 10px;
-    }
-
-    .terminal-command {
-      color: #fff;
-      margin-bottom: 10px;
-    }
-
-    .terminal-input {
-      color: #0f0;
-      display: inline;
-    }
-
-    .terminal-cursor {
-      background-color: #0f0;
-      display: inline;
-      animation: blink 1s infinite;
-    }
-
-    .notifications {
-      width: 300px;
-      background-color: #000;
-      border: 1px solid #fff;
-      padding: 10px;
-    }
-
     .notification {
       color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .prayer-times {
+      flex-grow: 1;
+    }
+
+    .prayer-time {
       margin-bottom: 10px;
     }
 
@@ -65,24 +45,21 @@
 <body>
   <div class="container">
     <div class="notifications">
-      <div class="terminal-title">Notificaciones de Rezo</div>
-      <div class="notification" id="notification-fajr">Fajr: <span id="notification-fajr-time">04:11</span></div>
-      <div class="notification" id="notification-dhuhr">Dhuhr: <span id="notification-dhuhr-time">11:52</span></div>
-      <div class="notification" id="notification-asr">Asr: <span id="notification-asr-time">15:19</span></div>
-      <div class="notification" id="notification-maghrib">Maghrib: <span id="notification-maghrib-time">18:16</span></div>
-      <div class="notification" id="notification-isha">Isha: <span id="notification-isha-time">19:29</span></div>
+      <div class="notification">Notificaciones de Rezo</div>
+      <div class="notification">Fajr: <span id="notification-fajr-time">04:11</span></div>
+      <div class="notification">Dhuhr: <span id="notification-dhuhr-time">11:52</span></div>
+      <div class="notification">Asr: <span id="notification-asr-time">15:19</span></div>
+      <div class="notification">Maghrib: <span id="notification-maghrib-time">18:16</span></div>
+      <div class="notification">Isha: <span id="notification-isha-time">19:29</span></div>
     </div>
 
-    <div class="terminal">
-      <div class="terminal-title">Panel de Cambio de Horas de Rezo</div>
-      <div class="terminal-command">Ingrese los nuevos horarios de rezo:</div>
-      <div class="terminal-command">Fajr: <span id="fajr-time" class="terminal-input">04:11</span></div>
-      <div class="terminal-command">Dhuhr: <span id="dhuhr-time" class="terminal-input">11:52</span></div>
-      <div class="terminal-command">Asr: <span id="asr-time" class="terminal-input">15:19</span></div>
-      <div class="terminal-command">Maghrib: <span id="maghrib-time" class="terminal-input">18:16</span></div>
-      <div class="terminal-command">Isha: <span id="isha-time" class="terminal-input">19:29</span></div>
-      <div class="terminal-command">-</div>
-      <div class="terminal-command"><span class="terminal-input">guardar-cambios</span></div>
+    <div class="prayer-times">
+      <h2>Horarios de Rezo</h2>
+      <div class="prayer-time">Fajr: <span id="fajr-time">04:11</span></div>
+      <div class="prayer-time">Dhuhr: <span id="dhuhr-time">11:52</span></div>
+      <div class="prayer-time">Asr: <span id="asr-time">15:19</span></div>
+      <div class="prayer-time">Maghrib: <span id="maghrib-time">18:16</span></div>
+      <div class="prayer-time">Isha: <span id="isha-time">19:29</span></div>
     </div>
   </div>
 
